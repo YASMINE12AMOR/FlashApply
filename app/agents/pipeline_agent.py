@@ -8,15 +8,31 @@ from app.utils.country_rules import get_country_rules
 def compute_country_compliance(cv_text: str, country_rules: dict) -> dict:
     compliance_score = 100
     forbidden_found = []
-    for forbidden in country_rules.get("forbidden_sections", []):
-        if forbidden.lower() in cv_text.lower():
+    lower_cv = cv_text.lower()
+    for forbidden in country_rules.get("forbidden_fields", []):
+        token = forbidden.replace("_", " ").lower()
+        if token in lower_cv or forbidden.lower() in lower_cv:
             forbidden_found.append(forbidden)
             compliance_score -= 15
+
+    words = max(1, len(cv_text.split()))
+    estimated_pages = round(words / 500, 2)
+    page_issues = []
+    min_pages = country_rules.get("min_pages")
+    max_pages = country_rules.get("max_pages")
+    if isinstance(min_pages, (int, float)) and estimated_pages < min_pages:
+        page_issues.append(f"CV trop court ({estimated_pages} pages estimees).")
+        compliance_score -= 6
+    if isinstance(max_pages, (int, float)) and estimated_pages > max_pages:
+        page_issues.append(f"CV trop long ({estimated_pages} pages estimees).")
+        compliance_score -= 6
 
     compliance_score = max(0, compliance_score)
     return {
         "compliance_score": compliance_score,
         "forbidden_found": forbidden_found,
+        "estimated_pages": estimated_pages,
+        "page_issues": page_issues,
     }
 
 
@@ -37,7 +53,7 @@ def run_pipeline(cv_file_path: str, offer_url: str, country: str) -> dict:
     compliance = compute_country_compliance(personalized_cv, country_rules)
 
     return {
-        "country": country,
+        "country": country_rules.get("country", country),
         "country_rules": country_rules,
         "cv_text": cv_text,
         "offer_text": offer_text,

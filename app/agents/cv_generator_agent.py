@@ -20,7 +20,7 @@ def _fallback_generate(cv_text: str, matching: dict, country_rules: dict) -> str
         ", ".join(missing) if missing else "Aucun manque majeur detecte.",
         "",
         "## Sections cibles",
-        ", ".join(country_rules.get("sections_order", [])),
+        ", ".join(country_rules.get("section_order", [])),
     ]
     return "\n".join(lines).strip()
 
@@ -35,8 +35,10 @@ Tu es un agent de personnalisation de CV.
 
 Contexte:
 - Pays cible: {country}
-- Regles sections: {country_rules.get("sections_order", [])}
-- Sections interdites: {country_rules.get("forbidden_sections", [])}
+- Regles sections: {country_rules.get("section_order", [])}
+- Sections interdites: {country_rules.get("forbidden_fields", [])}
+- Pattern design: {country_rules.get("layout", {})}
+- Ton attendu: {country_rules.get("tone", "")}
 - Score actuel CV vs Offre: {matching.get("match_score")}
 - Mots cles presents: {matching.get("keywords_present", [])}
 - Mots cles manquants: {matching.get("keywords_missing", [])}

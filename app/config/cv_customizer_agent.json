@@ -1,223 +1,180 @@
 {
   "cv_customizer_agent": {
-    "version": "1.0.0",
-    "description": "CV Customizer Agent configuration containing country-specific CV rules, formatting, and content guidelines.",
+    "version": "3.0.0",
+    "description": "Country-specific CV format profiles derived from provided samples (France, Germany, Canada only), optimized for PDF generation.",
     "countries": {
-      "USA": {
-        "meta": {
-          "document_name": "Resume",
-          "language": "American English",
-          "flag": "🇺🇸"
-        },
-        "format": {
-          "length": {
-            "min_pages": 1,
-            "max_pages": 2,
-            "rule": "1 page for entry-level, 2 pages max for experienced professionals."
-          },
-          "layout": "reverse_chronological",
-          "ats_optimized": true
-        },
-        "personal_information": {
-          "name": { "required": true },
-          "email": { "required": true },
-          "phone": { "required": true },
-          "linkedin": { "recommended": true },
-          "city_state": { "recommended": true },
-          "photo": { "allowed": false },
-          "date_of_birth": { "allowed": false },
-          "nationality": { "allowed": false },
-          "marital_status": { "allowed": false },
-          "gender": { "allowed": false },
-          "religion": { "allowed": false }
-        },
-        "sections": {
-          "order": [
-            "summary_or_objective",
-            "work_experience",
-            "education",
-            "skills",
-            "certifications",
-            "volunteer_work",
-            "awards"
-          ]
-        },
-        "cover_letter": {
-          "required": false,
-          "recommended": true
-        },
-        "tone": {
-          "style": "achievement-oriented"
-        },
-        "cultural_notes": [
-          "Quantified accomplishments are expected.",
-          "ATS screening is common."
-        ]
-      },
-      "UK": {
-        "meta": {
-          "document_name": "CV",
-          "language": "British English",
-          "flag": "🇬🇧"
-        },
-        "format": {
-          "length": {
-            "min_pages": 1,
-            "max_pages": 2,
-            "rule": "2 pages is standard."
-          },
-          "layout": "reverse_chronological",
-          "ats_optimized": true
-        },
-        "personal_information": {
-          "name": { "required": true },
-          "email": { "required": true },
-          "phone": { "required": true },
-          "linkedin": { "recommended": true },
-          "city": { "recommended": true },
-          "photo": { "allowed": false },
-          "date_of_birth": { "allowed": false },
-          "nationality": { "allowed": false },
-          "marital_status": { "allowed": false },
-          "gender": { "allowed": false }
-        },
-        "sections": {
-          "order": [
-            "personal_statement",
-            "work_experience",
-            "education",
-            "skills",
-            "hobbies_interests",
-            "references"
-          ]
-        },
-        "cover_letter": {
-          "required": false,
-          "recommended": true
-        },
-        "tone": {
-          "style": "professional and structured"
-        },
-        "cultural_notes": [
-          "Use British English spelling.",
-          "Personal statement is key."
-        ]
-      },
-      "Germany": {
-        "meta": {
-          "document_name": "Lebenslauf",
-          "language": "German",
-          "flag": "🇩🇪"
-        },
-        "format": {
-          "length": {
-            "min_pages": 2,
-            "max_pages": 3,
-            "rule": "2-3 pages."
-          },
-          "layout": "reverse_chronological",
-          "ats_optimized": false
-        },
-        "personal_information": {
-          "name": { "required": true },
-          "email": { "required": true },
-          "phone": { "required": true },
-          "address": { "required": true },
-          "date_of_birth": { "required": true },
-          "place_of_birth": { "required": true },
-          "nationality": { "required": true },
-          "marital_status": { "required": true },
-          "photo": { "required": true, "allowed": true }
-        },
-        "sections": {
-          "order": [
-            "personal_information_with_photo",
-            "education",
-            "work_experience",
-            "internships",
-            "language_skills",
-            "computer_skills",
-            "certifications",
-            "volunteer_work",
-            "hobbies_interests",
-            "signature_and_date"
-          ]
-        },
-        "cover_letter": {
-          "required": true,
-          "name": "Anschreiben"
-        },
-        "tone": {
-          "style": "formal, precise, and detailed"
-        },
-        "cultural_notes": [
-          "Photo and formal details are expected.",
-          "Sign and date the CV."
-        ]
-      },
       "France": {
+        "source_confidence": "from_user_sample",
         "meta": {
           "document_name": "CV",
-          "language": "French",
-          "flag": "🇫🇷"
+          "language": "French or English",
+          "flag": "FR"
         },
         "format": {
           "length": {
             "min_pages": 1,
             "max_pages": 2,
-            "rule": "1 page strongly preferred."
+            "rule": "1 page preferred, 2 pages max for senior profiles."
           },
-          "layout": "reverse_chronological",
-          "visual_design": "important",
+          "layout": "two_column",
+          "file_format": ["PDF"],
           "ats_optimized": false
+        },
+        "design_pattern": {
+          "overall_structure": "left_sidebar + right_main",
+          "header_style": "photo_left_name_title_top",
+          "section_title_style": "uppercase_bold_with_separator",
+          "body_density": "high",
+          "bullet_style": "solid_round",
+          "date_alignment": "left_inline",
+          "visual_priority": "high"
+        },
+        "sidebar_layout": {
+          "enabled": true,
+          "width_ratio": "33:67",
+          "position": "left",
+          "blocks_order": [
+            "contact",
+            "details",
+            "core_competencies",
+            "technical_summary"
+          ]
         },
         "personal_information": {
           "name": { "required": true },
           "email": { "required": true },
           "phone": { "required": true },
           "address": { "recommended": true },
-          "date_of_birth": { "commonly_included": true },
-          "nationality": { "commonly_included": true },
-          "marital_status": { "commonly_included": false },
-          "photo": { "allowed": true, "commonly_included": true }
+          "photo": { "allowed": true, "recommended": true },
+          "date_of_birth": { "allowed": true, "recommended": true },
+          "nationality": { "allowed": true, "recommended": true },
+          "marital_status": { "allowed": true, "recommended": false }
         },
         "sections": {
           "order": [
-            "personal_information_with_photo",
-            "professional_summary",
+            "header_with_photo",
+            "summary",
             "work_experience",
-            "education",
-            "skills",
-            "languages",
-            "hobbies_interests"
-          ]
-        },
-        "cover_letter": {
-          "required": true,
-          "name": "Lettre de motivation"
+            "education"
+          ],
+          "sidebar_sections": [
+            "contact",
+            "details",
+            "core_competencies",
+            "technical_summary"
+          ],
+          "summary": { "required": true, "length": "3-6 lines" },
+          "work_experience": {
+            "required": true,
+            "bullet_points": true,
+            "accomplishments_subsection": true,
+            "reverse_chronological": true
+          },
+          "education": { "required": true }
         },
         "tone": {
-          "style": "elegant, concise, and personal"
-        },
-        "cultural_notes": [
-          "Design and elegance matter.",
-          "One page is preferred."
-        ]
+          "style": "professional, technical, concise",
+          "voice": "factual and clear"
+        }
       },
-      "Canada": {
+      "Germany": {
+        "source_confidence": "from_user_sample",
         "meta": {
-          "document_name": "Resume",
-          "language": "English/French",
-          "flag": "🇨🇦"
+          "document_name": "Lebenslauf",
+          "language": "German or English",
+          "flag": "DE"
         },
         "format": {
           "length": {
             "min_pages": 1,
             "max_pages": 2,
-            "rule": "1 page entry-level, 2 pages experienced."
+            "rule": "1-2 pages in this sample style, dense and technical."
           },
-          "layout": "reverse_chronological",
+          "layout": "single_column",
+          "file_format": ["PDF"],
           "ats_optimized": true
+        },
+        "design_pattern": {
+          "overall_structure": "single_column_dense",
+          "header_style": "centered_name + contact_line",
+          "section_title_style": "uppercase_bold + horizontal_rule",
+          "body_density": "very_high",
+          "bullet_style": "solid_round",
+          "date_alignment": "right",
+          "location_alignment": "right",
+          "keyword_emphasis": "bold_inline_metrics"
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "linkedin": { "recommended": true },
+          "location": { "recommended": true },
+          "photo": { "allowed": false, "recommended": false }
+        },
+        "sections": {
+          "order": [
+            "header",
+            "work_experience",
+            "projects",
+            "skills",
+            "languages",
+            "education"
+          ],
+          "work_experience": {
+            "required": true,
+            "bullet_points": true,
+            "reverse_chronological": true,
+            "date_right_aligned": true,
+            "location_right_aligned": true
+          },
+          "projects": {
+            "required": true,
+            "bullet_points": true,
+            "show_keywords_line": true
+          },
+          "skills": {
+            "required": true,
+            "grouped_by_category": true
+          },
+          "languages": { "required": true },
+          "education": { "required": true, "reverse_chronological": true }
+        },
+        "tone": {
+          "style": "technical, results-driven, precise",
+          "voice": "compact and measurable"
+        }
+      },
+      "Canada": {
+        "source_confidence": "from_user_sample",
+        "meta": {
+          "document_name": "Resume",
+          "language": "French (sample) / English",
+          "flag": "CA"
+        },
+        "format": {
+          "length": {
+            "min_pages": 1,
+            "max_pages": 2,
+            "rule": "1 page preferred, 2 pages max."
+          },
+          "layout": "single_column",
+          "file_format": ["PDF"],
+          "ats_optimized": true
+        },
+        "design_pattern": {
+          "overall_structure": "header_split + single_main_column",
+          "header_style": "name_title_left_contact_right",
+          "section_title_style": "uppercase_bold + heavy_horizontal_rule",
+          "body_density": "medium_high",
+          "bullet_style": "solid_round",
+          "date_alignment": "left_inline_for_period",
+          "role_emphasis": "bold_role_title"
+        },
+        "header_layout": {
+          "type": "two_zone",
+          "left_zone": ["full_name", "job_title"],
+          "right_zone": ["phone", "email", "location", "linkedin"]
         },
         "personal_information": {
           "name": { "required": true },
@@ -228,31 +185,36 @@
           "photo": { "allowed": false },
           "date_of_birth": { "allowed": false },
           "nationality": { "allowed": false },
-          "sin_number": { "allowed": false },
           "marital_status": { "allowed": false }
         },
         "sections": {
           "order": [
-            "professional_summary",
-            "work_experience",
-            "education",
-            "skills",
-            "volunteer_work",
-            "certifications",
-            "awards"
-          ]
-        },
-        "cover_letter": {
-          "required": false,
-          "recommended": true
+            "header",
+            "objectif",
+            "competences",
+            "langues",
+            "experience_professionnelle",
+            "education_optional"
+          ],
+          "objectif": { "required": true, "length": "3-6 lines" },
+          "competences": {
+            "required": true,
+            "layout": "two_columns_bullets"
+          },
+          "langues": {
+            "required": true,
+            "display_mode": "label + visual_level_bar"
+          },
+          "experience_professionnelle": {
+            "required": true,
+            "bullet_points": true,
+            "date_and_location_before_role": true
+          }
         },
         "tone": {
-          "style": "professional, accomplishment-driven, community-conscious"
-        },
-        "cultural_notes": [
-          "Volunteer work is highly valued.",
-          "Bilingualism is a strong asset."
-        ]
+          "style": "professional, managerial, communication-focused",
+          "voice": "clear and practical"
+        }
       }
     }
   }
