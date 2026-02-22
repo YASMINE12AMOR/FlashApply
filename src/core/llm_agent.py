@@ -6,6 +6,7 @@ from openai import OpenAI
 def generate_adapted_cv_with_llm(
     *,
     api_key: str,
+    base_url: str,
     model: str,
     cv_text: str,
     job_text: str,
@@ -14,7 +15,7 @@ def generate_adapted_cv_with_llm(
     missing_terms: list[str],
     focus_keywords: list[str],
 ) -> str:
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=api_key, base_url=base_url)
 
     system_prompt = (
         "You are an expert CV writer and recruiter advisor. "
@@ -43,7 +44,6 @@ Output requirements:
 
     response = client.chat.completions.create(
         model=model,
-        temperature=0.3,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},

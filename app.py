@@ -1,9 +1,15 @@
 ﻿from __future__ import annotations
 
 import streamlit as st
+from dotenv import load_dotenv
+from streamlit.errors import StreamlitSecretNotFoundError
 
 from src.config.countries import COUNTRY_RULES
-from src.config.llm import DEFAULT_OPENAI_MODEL, resolve_openai_api_key
+from src.config.llm import (
+    DEFAULT_DEEPSEEK_BASE_URL,
+    DEFAULT_DEEPSEEK_MODEL,
+    resolve_deepseek_api_key,
+)
 from src.core.adaptor import adapt_cv_text
 from src.core.analyzer import missing_keywords, overlap_ratio, top_keywords
 from src.core.exporter import text_to_pdf_bytes
@@ -12,6 +18,7 @@ from src.core.parsers import extract_text
 from src.core.recommender import build_recommendations
 from src.core.scoring import compute_score
 
+load_dotenv()
 
 st.set_page_config(page_title="FlashApply", page_icon=":briefcase:", layout="wide")
 st.title("FlashApply - AI CV Adapter")
@@ -20,14 +27,11 @@ st.caption("Analyze a job offer, adapt your CV by country, and get a compatibili
 with st.sidebar:
     st.header("Configuration")
     country = st.selectbox("Target country", list(COUNTRY_RULES.keys()), index=0)
-    use_llm = st.checkbox("Use LLM rewrite (OpenAI)", value=True)
-    llm_model = st.text_input("LLM model", value=DEFAULT_OPENAI_MODEL, disabled=not use_llm)
-    llm_api_key_input = st.text_input(
-        "OPENAI_API_KEY",
-        type="password",
-        placeholder="sk-...",
-        disabled=not use_llm,
-    )
+    use_llm = st.checkbox("Use LLM rewrite (DeepSeek)", value=True)
+    try:
+        saved_key = st.secrets.get("DEEPSEEK_API_KEY", "")
+    except StreamlitSecretNotFoundError:
+        saved_key = ""
     run = st.button("Run analysis", type="primary")
 
 left, right = st.columns(2)
@@ -75,12 +79,13 @@ if run:
     llm_used = False
 
     if use_llm:
-        api_key = resolve_openai_api_key(llm_api_key_input)
+        api_key = resolve_deepseek_api_key(saved_key=saved_key)
         if api_key:
             try:
                 llm_result = generate_adapted_cv_with_llm(
                     api_key=api_key,
-                    model=llm_model.strip() or DEFAULT_OPENAI_MODEL,
+                    base_url=DEFAULT_DEEPSEEK_BASE_URL,
+                    model=DEFAULT_DEEPSEEK_MODEL,
                     cv_text=cv_text,
                     job_text=job_text,
                     country=country,
@@ -94,7 +99,7 @@ if run:
             except Exception as exc:
                 st.warning(f"LLM rewrite failed. Fallback used. Details: {exc}")
         else:
-            st.warning("No OpenAI API key provided. Fallback heuristic rewrite used.")
+            st.warning("No DeepSeek API key found. Use sidebar input, .env, or .streamlit/secrets.toml.")
 
     st.divider()
     c1, c2, c3 = st.columns(3)
@@ -113,7 +118,12 @@ if run:
     st.caption(f"Generation mode: {'LLM' if llm_used else 'Heuristic fallback'}")
     st.text_area("Generated draft", adapted_cv, height=420)
 
-    pdf_data = text_to_pdf_bytes(adapted_cv, title="FlashApply - Adapted CV")
+    pdf_data = text_to_pdf_bytes(
+        adapted_cv,
+        title="FlashApply - Adapted CV",
+        country=country,
+        model_info=(DEFAULT_DEEPSEEK_MODEL if llm_used else "heuristic-fallback"),
+    )
     st.download_button(
         label="Download adapted CV (.pdf)",
         data=pdf_data,

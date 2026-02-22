@@ -39,13 +39,26 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## LLM (OpenAI)
-- Le modele par defaut est defini dans `src/config/llm.py` (`DEFAULT_OPENAI_MODEL`).
-- Dans l'interface Streamlit, active `Use LLM rewrite (OpenAI)`.
+## LLM (DeepSeek)
+- Le modele par defaut est defini dans `src/config/llm.py` (`DEFAULT_DEEPSEEK_MODEL`).
+- Dans l'interface Streamlit, active `Use LLM rewrite (DeepSeek)`.
 - Fournis la cle API soit:
-  - via le champ `OPENAI_API_KEY` dans la sidebar,
-  - soit via la variable d'environnement `OPENAI_API_KEY`.
+  - via le champ `DEEPSEEK_API_KEY` dans la sidebar,
+  - via le fichier `.env` (charge automatiquement),
+  - via `.streamlit/secrets.toml`,
+  - ou via la variable d'environnement `DEEPSEEK_API_KEY`.
 - Si la cle est absente ou l'appel echoue, l'application utilise automatiquement le fallback heuristique.
+
+### Eviter la saisie manuelle de la cle
+Option 1 (recommandee): fichier `.env` a la racine du projet
+```bash
+DEEPSEEK_API_KEY=sk-xxxxxxxx
+```
+
+Option 2: fichier `.streamlit/secrets.toml`
+```toml
+DEEPSEEK_API_KEY = "sk-xxxxxxxx"
+```
 
 ## Limites (MVP)
 - Le LLM depend de la qualite du prompt et de la cle API

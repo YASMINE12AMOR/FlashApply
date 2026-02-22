@@ -1,0 +1,117 @@
+{
+  "USA": {
+    "language": "English",
+    "style": "results_oriented",
+    "tips": [
+      "Use strong action verbs.",
+      "Quantify impact with metrics.",
+      "Keep resume concise (1-2 pages)."
+    ],
+    "focus_keywords": ["impact", "leadership", "results", "ownership"],
+    "format": {
+      "section_order": [
+        "Professional Summary",
+        "Core Skills",
+        "Professional Experience",
+        "Education",
+        "Certifications"
+      ],
+      "bullet_style": "achievement-first",
+      "date_style": "MMM YYYY",
+      "max_pages": 2,
+      "include_photo": false
+    }
+  },
+  "Canada": {
+    "language": "English/French",
+    "style": "balanced",
+    "tips": [
+      "Highlight collaboration and communication.",
+      "Show measurable achievements.",
+      "Adapt terminology to local industry usage."
+    ],
+    "focus_keywords": ["teamwork", "communication", "delivery", "stakeholder"],
+    "format": {
+      "section_order": [
+        "Professional Summary",
+        "Core Skills",
+        "Experience",
+        "Education",
+        "Volunteer Experience"
+      ],
+      "bullet_style": "impact-and-collaboration",
+      "date_style": "MMM YYYY",
+      "max_pages": 2,
+      "include_photo": false
+    }
+  },
+  "France": {
+    "language": "French",
+    "style": "structured",
+    "tips": [
+      "Use a clear and formal structure.",
+      "Highlight diplomas and certifications.",
+      "Mention tools and technologies explicitly."
+    ],
+    "focus_keywords": ["formation", "certification", "outils", "missions"],
+    "format": {
+      "section_order": [
+        "Profil",
+        "Competences",
+        "Experiences Professionnelles",
+        "Formation",
+        "Certifications"
+      ],
+      "bullet_style": "mission-resultat",
+      "date_style": "MM/YYYY",
+      "max_pages": 2,
+      "include_photo": true
+    }
+  },
+  "Germany": {
+    "language": "German/English",
+    "style": "precision",
+    "tips": [
+      "Emphasize precision and reliability.",
+      "List technical depth and standards knowledge.",
+      "Use chronological clarity."
+    ],
+    "focus_keywords": ["quality", "standards", "process", "reliability"],
+    "format": {
+      "section_order": [
+        "Profile",
+        "Skills",
+        "Work Experience",
+        "Education",
+        "Certificates"
+      ],
+      "bullet_style": "structured-and-precise",
+      "date_style": "MM.YYYY",
+      "max_pages": 2,
+      "include_photo": true
+    }
+  },
+  "UK": {
+    "language": "English",
+    "style": "achievement",
+    "tips": [
+      "Focus on outcomes and role responsibilities.",
+      "Use concise professional profile.",
+      "Tailor skills section to the role."
+    ],
+    "focus_keywords": ["outcome", "delivery", "initiative", "problem-solving"],
+    "format": {
+      "section_order": [
+        "Professional Profile",
+        "Key Skills",
+        "Work Experience",
+        "Education",
+        "Certifications"
+      ],
+      "bullet_style": "results-focused",
+      "date_style": "MMM YYYY",
+      "max_pages": 2,
+      "include_photo": false
+    }
+  }
+}
