@@ -1,4 +1,7 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
+import re
+from urllib.parse import unquote, urlparse
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -18,56 +21,228 @@ from src.core.parsers import extract_text
 from src.core.recommender import build_recommendations
 from src.core.scoring import compute_score
 
+
+def infer_job_title_from_link(job_link: str) -> str:
+    parsed = urlparse(job_link.strip())
+    candidate = unquote(parsed.path.split("/")[-1] if parsed.path else "")
+    candidate = re.sub(r"\.[a-zA-Z0-9]{2,4}$", "", candidate)
+    candidate = re.sub(r"[-_]+", " ", candidate)
+    candidate = re.sub(r"\b(job|jobs|view|offer|offre|poste|position|emploi)\b", " ", candidate, flags=re.I)
+    candidate = re.sub(r"\s+", " ", candidate).strip(" -_")
+    if len(candidate) < 3:
+        return "Target role from offer link"
+    return candidate[:80].strip().title()
+
+
 load_dotenv()
 
-st.set_page_config(page_title="FlashApply", page_icon=":briefcase:", layout="wide")
-st.title("FlashApply - AI CV Adapter")
-st.caption("Analyze a job offer, adapt your CV by country, and get a compatibility score.")
+st.set_page_config(page_title="ApplyFlash", page_icon=":zap:", layout="wide")
 
-with st.sidebar:
-    st.header("Configuration")
+st.markdown(
+    """
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+      .stApp {
+        background:
+          radial-gradient(900px 520px at 8% 0%, rgba(92, 214, 255, 0.34), transparent 62%),
+          radial-gradient(900px 600px at 100% 100%, rgba(93, 127, 255, 0.26), transparent 65%),
+          linear-gradient(160deg, #f6fbff 0%, #eef5ff 55%, #f9fcff 100%);
+      }
+
+      [data-testid="stAppViewContainer"] > .main {
+        background: transparent;
+      }
+
+      .main .block-container {
+        max-width: 1160px;
+        padding-top: 2.2rem;
+      }
+
+      h1, h2, h3, p, label, span, div {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 1.4rem;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        border: 1px solid rgba(63, 129, 255, 0.26);
+        border-radius: 999px;
+        padding: 0.35rem 0.8rem;
+        color: #2f62d8;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero h1 {
+        margin: 0.8rem 0 0.4rem 0;
+        font-family: "Sora", sans-serif;
+        font-size: clamp(2rem, 5.2vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #0e1a36;
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 760px;
+        color: #44567a;
+      }
+
+      .panel {
+        border: 1px solid rgba(96, 142, 230, 0.26);
+        border-radius: 16px;
+        padding: 1rem 1rem 0.6rem 1rem;
+        background:
+          linear-gradient(160deg, rgba(255, 255, 255, 0.86), rgba(247, 251, 255, 0.95));
+        box-shadow: 0 14px 36px rgba(70, 105, 173, 0.13);
+        margin-bottom: 1rem;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+      }
+
+      .panel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 42px rgba(64, 95, 156, 0.18);
+      }
+
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.7rem;
+        margin: 0.6rem 0 0.4rem 0;
+      }
+
+      .kpi {
+        border: 1px solid rgba(96, 142, 230, 0.22);
+        border-radius: 12px;
+        padding: 0.7rem 0.75rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.74);
+      }
+
+      .kpi .value {
+        color: #1f4fcc;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .kpi .label {
+        color: #5a6e93;
+        font-size: 0.73rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      [data-testid="stSidebar"], [data-testid="collapsedControl"] {
+        display: none !important;
+      }
+
+      .stButton > button {
+        border-radius: 12px;
+        border: 1px solid rgba(56, 122, 232, 0.55);
+        background: linear-gradient(135deg, #2e73f0, #55a5ff);
+        color: #ffffff;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(72, 137, 243, 0.3);
+      }
+
+      .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(255, 255, 255, 0.92) !important;
+        border-color: rgba(95, 140, 221, 0.35) !important;
+        color: #15203b !important;
+      }
+
+      .stMarkdown, .stCaption, .stTextInput label, .stTextArea label, .stFileUploader label, .stSelectbox label {
+        color: #233255 !important;
+      }
+
+      .config-title {
+        margin-bottom: 0.5rem;
+      }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="hero">
+      <span class="hero-badge">AI CV Matching Studio</span>
+      <h1>ApplyFlash</h1>
+      <p>Collez le lien de l'offre, chargez votre CV et obtenez une version adaptee avec un score de matching clair et rapide.</p>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="value">5</div><div class="label">Pays preconfigures</div></div>
+      <div class="kpi"><div class="value">~30s</div><div class="label">Duree moyenne</div></div>
+      <div class="kpi"><div class="value">IA + Regles</div><div class="label">Moteur hybride</div></div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown('<div class="panel">', unsafe_allow_html=True)
+st.subheader("Configuration")
+cfg1, cfg2, cfg3 = st.columns([1.5, 1, 1])
+with cfg1:
     country = st.selectbox("Target country", list(COUNTRY_RULES.keys()), index=0)
+with cfg2:
     use_llm = st.checkbox("Use LLM rewrite (DeepSeek)", value=True)
-    try:
-        saved_key = st.secrets.get("DEEPSEEK_API_KEY", "")
-    except StreamlitSecretNotFoundError:
-        saved_key = ""
-    run = st.button("Run analysis", type="primary")
+with cfg3:
+    st.write("")
+    st.write("")
+    run = st.button("Run analysis", type="primary", use_container_width=True)
+try:
+    saved_key = st.secrets.get("DEEPSEEK_API_KEY", "")
+except StreamlitSecretNotFoundError:
+    saved_key = ""
+st.markdown("</div>", unsafe_allow_html=True)
 
 left, right = st.columns(2)
 
 with left:
-    st.subheader("Target Role")
-    job_title = st.text_input("Job title / Poste vise", placeholder="e.g., Data Analyst")
-    st.subheader("Job Offer (optional but recommended)")
-    job_file = st.file_uploader("Upload job offer (.txt or .pdf)", type=["txt", "pdf"], key="job_file")
-    job_text_manual = st.text_area("Or paste the job offer", height=260)
+    st.markdown('<div class="panel">', unsafe_allow_html=True)
+    st.subheader("Offre d'emploi")
+    job_link = st.text_input(
+        "Lien de l'offre",
+        placeholder="https://www.linkedin.com/jobs/view/...",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with right:
-    st.subheader("Your CV")
+    st.markdown('<div class="panel">', unsafe_allow_html=True)
+    st.subheader("Votre CV actuel")
     cv_file = st.file_uploader("Upload your CV (.txt or .pdf)", type=["txt", "pdf"], key="cv_file")
-    profile_image_file = st.file_uploader(
-        "Photo de profil (optionnel)",
-        type=["png", "jpg", "jpeg"],
-        key="profile_image_file",
-    )
     cv_text_manual = st.text_area("Or paste your CV", height=260)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 if run:
-    job_text = extract_text(job_file.getvalue() if job_file else None, job_file.name if job_file else None, job_text_manual)
     cv_text = extract_text(cv_file.getvalue() if cv_file else None, cv_file.name if cv_file else None, cv_text_manual)
-    effective_job_text = job_text if job_text else f"Target role: {job_title}"
+    cleaned_link = (job_link or "").strip()
+    job_title = infer_job_title_from_link(cleaned_link)
+    effective_job_text = f"Job offer link: {cleaned_link}\nInferred role: {job_title}"
 
-    if not cv_text or not job_title.strip():
-        st.error("Please provide both a target job title (poste) and a CV.")
+    if not cv_text or not cleaned_link:
+        st.error("Please provide both a job offer link and a CV.")
         st.stop()
 
     job_analysis = top_keywords(effective_job_text, max_items=25)
     cv_analysis = top_keywords(cv_text, max_items=25)
 
-    keyword_overlap = overlap_ratio(job_analysis.keywords, cv_analysis.keywords)
     missing = missing_keywords(job_analysis.keywords, cv_analysis.keywords, limit=12)
 
+    keyword_overlap = overlap_ratio(job_analysis.keywords, cv_analysis.keywords)
     score = compute_score(keyword_overlap, cv_text)
 
     rules = COUNTRY_RULES[country]
@@ -119,13 +294,6 @@ if run:
     c2.metric("Keyword match", f"{score.keyword_match}%")
     c3.metric("CV length quality", f"{score.length_quality}%")
 
-    st.subheader("Top missing keywords")
-    st.write(missing if missing else ["No major keyword gaps detected in top terms."])
-    st.subheader("Country format loaded (JSON)")
-    st.json(rules.get("format", {}))
-    if not rules.get("format", {}).get("include_photo", False):
-        st.caption("Photo profile ignored for this country format.")
-
     st.subheader("Recommendations")
     for idx, rec in enumerate(recommendations, start=1):
         st.write(f"{idx}. {rec}")
@@ -136,16 +304,12 @@ if run:
 
     pdf_data = text_to_pdf_bytes(
         adapted_cv,
-        title="FlashApply - Adapted CV",
+        title="ApplyFlash - Adapted CV",
         country=country,
         model_info=(DEFAULT_DEEPSEEK_MODEL if llm_used else "heuristic-fallback"),
         layout_mode=rules.get("format", {}).get("layout_mode", "vertical_single_column"),
-        include_photo=rules.get("format", {}).get("include_photo", False),
-        profile_image_bytes=(
-            profile_image_file.getvalue()
-            if profile_image_file and rules.get("format", {}).get("include_photo", False)
-            else None
-        ),
+        include_photo=False,
+        profile_image_bytes=None,
     )
     st.download_button(
         label="Download adapted CV (.pdf)",
@@ -154,4 +318,4 @@ if run:
         mime="application/pdf",
     )
 else:
-    st.info("Select country, provide offer + CV, then click 'Run analysis'.")
+    st.info("Select country, add the job offer link + CV, then click 'Run analysis'.")

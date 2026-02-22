@@ -1,4 +1,4 @@
-﻿# FlashApply
+# ApplyFlash
 
 Application IA simple pour:
 - analyser une offre d'emploi
@@ -72,3 +72,4 @@ DEEPSEEK_API_KEY = "sk-xxxxxxxx"
 - Integrer un LLM (OpenAI/Azure) pour re-ecriture avancee
 - Ajouter export DOCX/PDF du CV adapte
 - Ajouter historique de candidatures et A/B testing des versions
+
