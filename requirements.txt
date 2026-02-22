@@ -4,3 +4,4 @@ pypdf>=5.1.0
 reportlab>=4.2.5
 openai>=1.60.0
 python-dotenv>=1.0.1
+stripe>=11.0.0

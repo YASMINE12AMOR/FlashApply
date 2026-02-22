@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from streamlit.errors import StreamlitSecretNotFoundError
 
 from src.config.countries import COUNTRY_RULES
+from src.config.billing import FREE_ANALYSIS_LIMIT, FREE_COUNTRIES, PREMIUM_PRICE_CENTS
 from src.config.llm import (
     DEFAULT_DEEPSEEK_BASE_URL,
     DEFAULT_DEEPSEEK_MODEL,
@@ -15,6 +16,7 @@ from src.config.llm import (
 )
 from src.core.adaptor import adapt_cv_text
 from src.core.analyzer import missing_keywords, overlap_ratio, top_keywords
+from src.core.billing import BillingError, create_checkout_session, is_checkout_session_paid
 from src.core.exporter import text_to_pdf_bytes
 from src.core.llm_agent import generate_adapted_cv_with_llm
 from src.core.parsers import extract_text
@@ -37,6 +39,35 @@ def infer_job_title_from_link(job_link: str) -> str:
 load_dotenv()
 
 st.set_page_config(page_title="ApplyFlash", page_icon=":zap:", layout="wide")
+
+if "premium_unlocked" not in st.session_state:
+    st.session_state["premium_unlocked"] = False
+if "analysis_runs_used" not in st.session_state:
+    st.session_state["analysis_runs_used"] = 0
+if "stripe_checkout_url" not in st.session_state:
+    st.session_state["stripe_checkout_url"] = ""
+
+payment_status = st.query_params.get("payment", "")
+payment_session_id = st.query_params.get("session_id", "")
+if payment_status == "success" and payment_session_id and not st.session_state["premium_unlocked"]:
+    try:
+        if is_checkout_session_paid(payment_session_id):
+            st.session_state["premium_unlocked"] = True
+            st.session_state["stripe_checkout_url"] = ""
+            st.success("Payment confirmed. Premium unlocked.")
+    except Exception as exc:
+        st.warning(f"Payment verification failed. Details: {exc}")
+    finally:
+        try:
+            st.query_params.clear()
+        except Exception:
+            pass
+elif payment_status == "canceled":
+    st.info("Payment canceled. You can continue with the free plan.")
+    try:
+        st.query_params.clear()
+    except Exception:
+        pass
 
 st.markdown(
     """
@@ -195,10 +226,17 @@ st.markdown(
 st.markdown('<div class="panel">', unsafe_allow_html=True)
 st.subheader("Configuration")
 cfg1, cfg2, cfg3 = st.columns([1.5, 1, 1])
+all_countries = list(COUNTRY_RULES.keys())
+if st.session_state["premium_unlocked"]:
+    selectable_countries = all_countries
+else:
+    selectable_countries = [c for c in all_countries if c in FREE_COUNTRIES]
+if not selectable_countries:
+    selectable_countries = all_countries
 with cfg1:
-    country = st.selectbox("Target country", list(COUNTRY_RULES.keys()), index=0)
+    country = st.selectbox("Target country", selectable_countries, index=0)
 with cfg2:
-    use_llm = st.checkbox("Use LLM rewrite (DeepSeek)", value=True)
+    use_llm = st.checkbox("Use LLM rewrite", value=True)
 with cfg3:
     st.write("")
     st.write("")
@@ -208,6 +246,30 @@ try:
 except StreamlitSecretNotFoundError:
     saved_key = ""
 st.markdown("</div>", unsafe_allow_html=True)
+
+if st.session_state["premium_unlocked"]:
+    st.success("Premium plan active: unlimited analyses, premium PDF export, all country templates.")
+else:
+    st.markdown('<div class="panel">', unsafe_allow_html=True)
+    st.subheader("Unlock Premium")
+    st.write(
+        f"Free plan: {FREE_ANALYSIS_LIMIT} analyses max, limited country templates, and no PDF export."
+    )
+    st.write(
+        f"Premium unlocks unlimited analyses, PDF export, and all country templates for ${PREMIUM_PRICE_CENTS / 100:.2f}."
+    )
+    billing_email = st.text_input("Receipt email (optional)", placeholder="you@example.com", key="billing_email")
+    if st.button("Create payment link", use_container_width=True):
+        try:
+            checkout = create_checkout_session(email=billing_email)
+            st.session_state["stripe_checkout_url"] = checkout.checkout_url
+        except BillingError as exc:
+            st.error(str(exc))
+        except Exception as exc:
+            st.error(f"Could not create payment link. Details: {exc}")
+    if st.session_state["stripe_checkout_url"]:
+        st.link_button("Open secure checkout", st.session_state["stripe_checkout_url"], use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 left, right = st.columns(2)
 
@@ -228,6 +290,10 @@ with right:
     st.markdown("</div>", unsafe_allow_html=True)
 
 if run:
+    if not st.session_state["premium_unlocked"] and st.session_state["analysis_runs_used"] >= FREE_ANALYSIS_LIMIT:
+        st.error("Free analysis limit reached. Unlock Premium to continue.")
+        st.stop()
+
     cv_text = extract_text(cv_file.getvalue() if cv_file else None, cv_file.name if cv_file else None, cv_text_manual)
     cleaned_link = (job_link or "").strip()
     job_title = infer_job_title_from_link(cleaned_link)
@@ -244,6 +310,7 @@ if run:
 
     keyword_overlap = overlap_ratio(job_analysis.keywords, cv_analysis.keywords)
     score = compute_score(keyword_overlap, cv_text)
+    st.session_state["analysis_runs_used"] += 1
 
     rules = COUNTRY_RULES[country]
     recommendations = build_recommendations(
@@ -302,20 +369,28 @@ if run:
     st.caption(f"Generation mode: {'LLM' if llm_used else 'Heuristic fallback'}")
     st.text_area("Generated draft", adapted_cv, height=420)
 
-    pdf_data = text_to_pdf_bytes(
-        adapted_cv,
-        title="ApplyFlash - Adapted CV",
-        country=country,
-        model_info=(DEFAULT_DEEPSEEK_MODEL if llm_used else "heuristic-fallback"),
-        layout_mode=rules.get("format", {}).get("layout_mode", "vertical_single_column"),
-        include_photo=False,
-        profile_image_bytes=None,
-    )
-    st.download_button(
-        label="Download adapted CV (.pdf)",
-        data=pdf_data,
-        file_name="adapted_cv.pdf",
-        mime="application/pdf",
-    )
+    if st.session_state["premium_unlocked"]:
+        pdf_data = text_to_pdf_bytes(
+            adapted_cv,
+            title="ApplyFlash - Adapted CV",
+            country=country,
+            model_info=(DEFAULT_DEEPSEEK_MODEL if llm_used else "heuristic-fallback"),
+            layout_mode=rules.get("format", {}).get("layout_mode", "vertical_single_column"),
+            include_photo=False,
+            profile_image_bytes=None,
+        )
+        st.download_button(
+            label="Download adapted CV (.pdf)",
+            data=pdf_data,
+            file_name="adapted_cv.pdf",
+            mime="application/pdf",
+        )
+    else:
+        st.info("PDF export is a Premium feature. Unlock premium to download the adapted CV.")
 else:
-    st.info("Select country, add the job offer link + CV, then click 'Run analysis'.")
+    if st.session_state["premium_unlocked"]:
+        st.info("Select country, add the job offer link + CV, then click 'Run analysis'.")
+    else:
+        st.info(
+            f"Free plan usage: {st.session_state['analysis_runs_used']}/{FREE_ANALYSIS_LIMIT} analyses."
+        )

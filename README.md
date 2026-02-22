@@ -52,6 +52,31 @@ streamlit run app.py
   - ou via la variable d'environnement `DEEPSEEK_API_KEY`.
 - Si la cle est absente ou l'appel echoue, l'application utilise automatiquement le fallback heuristique.
 
+## Stripe Premium (MVP)
+- Le projet lit `STRIPE_SECRET_KEY` depuis l'environnement (serveur uniquement).
+- Flux implemente:
+  1. creation d'un lien Checkout Stripe,
+  2. paiement utilisateur,
+  3. retour avec `session_id`,
+  4. verification serveur du statut `paid`,
+  5. activation premium.
+- Premium debloque:
+  - analyses illimitees,
+  - export PDF,
+  - templates pays avances.
+- Free plan:
+  - limite d'analyses configurable via `FREE_ANALYSIS_LIMIT`,
+  - templates pays limites.
+
+Variables utiles:
+```bash
+STRIPE_SECRET_KEY=rk_test_xxx
+APP_BASE_URL=http://localhost:8501
+FREE_ANALYSIS_LIMIT=3
+STRIPE_PREMIUM_PRICE_CENTS=900
+STRIPE_CURRENCY=usd
+```
+
 ### Eviter la saisie manuelle de la cle
 Option 1 (recommandee): fichier `.env` a la racine du projet
 ```bash
