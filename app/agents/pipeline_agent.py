@@ -1,0 +1,48 @@
+from app.agents.cv_generator_agent import generate_personalized_cv
+from app.agents.matching_agent import compute_matching
+from app.extractors.cv_extractor import extract_cv_text
+from app.extractors.job_offer_extractor import fetch_job_offer
+from app.utils.country_rules import get_country_rules
+
+
+def compute_country_compliance(cv_text: str, country_rules: dict) -> dict:
+    compliance_score = 100
+    forbidden_found = []
+    for forbidden in country_rules.get("forbidden_sections", []):
+        if forbidden.lower() in cv_text.lower():
+            forbidden_found.append(forbidden)
+            compliance_score -= 15
+
+    compliance_score = max(0, compliance_score)
+    return {
+        "compliance_score": compliance_score,
+        "forbidden_found": forbidden_found,
+    }
+
+
+def run_pipeline(cv_file_path: str, offer_url: str, country: str) -> dict:
+    cv_text = extract_cv_text(cv_file_path)
+    offer_text = fetch_job_offer(offer_url)
+    country_rules = get_country_rules(country)
+
+    original_matching = compute_matching(cv_text, offer_text)
+    personalized_cv = generate_personalized_cv(
+        cv_text=cv_text,
+        offer_text=offer_text,
+        country=country,
+        country_rules=country_rules,
+        matching=original_matching,
+    )
+    personalized_matching = compute_matching(personalized_cv, offer_text)
+    compliance = compute_country_compliance(personalized_cv, country_rules)
+
+    return {
+        "country": country,
+        "country_rules": country_rules,
+        "cv_text": cv_text,
+        "offer_text": offer_text,
+        "original_matching": original_matching,
+        "personalized_cv": personalized_cv,
+        "personalized_matching": personalized_matching,
+        "compliance": compliance,
+    }

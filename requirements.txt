@@ -1,12 +1,11 @@
 fastapi
 uvicorn
-langchain
-langchain-openai
-python-dotenv
+streamlit
 requests
-pydantic
+python-dotenv
+langchain-openai
 pdfplumber
 python-docx
 pytesseract
 Pillow
-mimetypes
+reportlab
