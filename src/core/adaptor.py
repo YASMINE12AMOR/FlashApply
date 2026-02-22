@@ -99,6 +99,10 @@ def _extract_sections(cv_text: str) -> OrderedDict[str, list[str]]:
         value = line
         if value.startswith(("-", "*", "•")):
             value = value[1:].strip()
+        value = re.sub(r"^\s*(?:ap|map)?-?\s*arker\S*\s+", "", value, flags=re.IGNORECASE)
+        value = re.sub(r"^\s*\S*arker\S*\s+", "", value, flags=re.IGNORECASE)
+        value = re.sub(r"(?<=[a-zà-ÿ])(?=[A-ZÀ-ÖØ-Ý])", " ", value)
+        value = re.sub(r"\s+", " ", value).strip()
         if value:
             sections.setdefault(current, []).append(value)
 
