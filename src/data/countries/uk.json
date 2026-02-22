@@ -1,0 +1,56 @@
+﻿{
+  "country": "UK",
+  "language": "English",
+  "style": "formal_classic",
+  "tips": [
+    "Use concise wording and a professional tone.",
+    "Keep section titles simple and recruiter-friendly.",
+    "Prioritize recent and relevant experience first."
+  ],
+  "focus_keywords": ["delivery", "operations", "customer service", "problem solving"],
+  "format": {
+    "template_name": "uk_classic_grey_red_lines",
+    "layout_mode": "vertical_single_column",
+    "page": {
+      "size": "A4",
+      "margins_mm": 14,
+      "background": "#efefef"
+    },
+    "header": {
+      "name_alignment": "center",
+      "name_case": "upper",
+      "title_under_name": true,
+      "contact_inline": true,
+      "top_band": {
+        "enabled": true,
+        "height_mm": 6,
+        "color": "#5b5b5b"
+      }
+    },
+    "section_style": {
+      "title_case": "sentence",
+      "divider": "thin_color_line",
+      "divider_color": "#c84b4b",
+      "spacing_after_title_mm": 2
+    },
+    "content": {
+      "section_order": [
+        "Summary",
+        "Experience",
+        "Skills",
+        "Education"
+      ],
+      "bullet_style": "square_or_dot",
+      "date_style": "MMM YYYY",
+      "date_alignment": "right_on_role_line",
+      "skills_layout": "two_columns",
+      "max_pages": 2,
+      "include_photo": false
+    },
+    "ats": {
+      "allow_tables": false,
+      "allow_icons": false,
+      "section_titles_plain_text": true
+    }
+  }
+}

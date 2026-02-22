@@ -1,117 +1,509 @@
 {
-  "USA": {
-    "language": "English",
-    "style": "results_oriented",
-    "tips": [
-      "Use strong action verbs.",
-      "Quantify impact with metrics.",
-      "Keep resume concise (1-2 pages)."
-    ],
-    "focus_keywords": ["impact", "leadership", "results", "ownership"],
-    "format": {
-      "section_order": [
-        "Professional Summary",
-        "Core Skills",
-        "Professional Experience",
-        "Education",
-        "Certifications"
+  "cv_customizer_agent": {
+    "version": "1.0.0",
+    "description": "CV Customizer Agent configuration containing country-specific CV rules, formatting, and content guidelines.",
+    "countries": {
+      "USA": {
+        "meta": {
+          "document_name": "Résumé",
+          "language": "American English",
+          "flag": "🇺🇸"
+        },
+        "format": {
+          "length": {
+            "min_pages": 1,
+            "max_pages": 2,
+            "rule": "1 page for entry-level, 2 pages max for experienced professionals. Academic CV is separate and can be 5–15+ pages."
+          },
+          "layout": "reverse_chronological",
+          "font_recommended": ["Calibri", "Garamond", "Arial"],
+          "font_size_body": "10–12pt",
+          "margins": "0.5–1 inch",
+          "file_format": ["PDF", "DOCX"],
+          "ats_optimized": true
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "linkedin": { "required": false, "recommended": true },
+          "city_state": { "required": false, "recommended": true },
+          "photo": { "required": false, "allowed": false, "reason": "Anti-discrimination laws" },
+          "date_of_birth": { "required": false, "allowed": false, "reason": "Anti-discrimination laws" },
+          "nationality": { "required": false, "allowed": false, "reason": "Anti-discrimination laws" },
+          "marital_status": { "required": false, "allowed": false, "reason": "Anti-discrimination laws" },
+          "gender": { "required": false, "allowed": false },
+          "religion": { "required": false, "allowed": false }
+        },
+        "sections": {
+          "order": [
+            "summary_or_objective",
+            "work_experience",
+            "education",
+            "skills",
+            "certifications",
+            "volunteer_work",
+            "awards"
+          ],
+          "summary_or_objective": {
+            "required": false,
+            "recommended": true,
+            "description": "3–5 lines personal branding statement. Use 'Summary' for experienced, 'Objective' for entry-level."
+          },
+          "work_experience": {
+            "required": true,
+            "format": "reverse_chronological",
+            "bullet_points": true,
+            "quantify_achievements": true,
+            "action_verbs": true,
+            "description": "Use strong action verbs and quantify results (e.g., 'Increased revenue by 30%')."
+          },
+          "education": {
+            "required": true,
+            "include_gpa": { "rule": "Only if 3.5+ or recent graduate" },
+            "include_high_school": false
+          },
+          "skills": {
+            "required": true,
+            "types": ["technical", "software", "languages"]
+          },
+          "references": {
+            "required": false,
+            "allowed": false,
+            "note": "Write 'Available upon request' only if space allows, or omit entirely."
+          },
+          "hobbies_interests": {
+            "required": false,
+            "recommended": false,
+            "note": "Generally not included unless directly relevant to the job."
+          },
+          "volunteer_work": {
+            "required": false,
+            "recommended": false
+          }
+        },
+        "cover_letter": {
+          "required": false,
+          "recommended": true,
+          "weight": "medium"
+        },
+        "tone": {
+          "style": "achievement-oriented",
+          "voice": "third-person implied (no 'I')",
+          "keywords": "ATS-friendly keywords essential"
+        },
+        "cultural_notes": [
+          "CV is treated as a personal brand marketing document.",
+          "Quantified accomplishments are expected.",
+          "ATS screening is very common — tailor keywords per job posting.",
+          "Avoid any personal data that could trigger discrimination."
+        ]
+      },
+
+      "UK": {
+        "meta": {
+          "document_name": "CV",
+          "language": "British English",
+          "flag": "🇬🇧"
+        },
+        "format": {
+          "length": {
+            "min_pages": 2,
+            "max_pages": 2,
+            "rule": "2 pages is the strong standard. 1 page acceptable for entry-level."
+          },
+          "layout": "reverse_chronological",
+          "font_recommended": ["Calibri", "Arial", "Times New Roman"],
+          "font_size_body": "10–12pt",
+          "margins": "1.5–2 cm",
+          "file_format": ["PDF", "DOCX"],
+          "ats_optimized": true
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "linkedin": { "required": false, "recommended": true },
+          "city": { "required": false, "recommended": true },
+          "photo": { "required": false, "allowed": false, "reason": "Equality Act 2010 discourages it" },
+          "date_of_birth": { "required": false, "allowed": false, "reason": "Discrimination concerns" },
+          "nationality": { "required": false, "allowed": false },
+          "marital_status": { "required": false, "allowed": false },
+          "gender": { "required": false, "allowed": false }
+        },
+        "sections": {
+          "order": [
+            "personal_statement",
+            "work_experience",
+            "education",
+            "skills",
+            "hobbies_interests",
+            "references"
+          ],
+          "personal_statement": {
+            "required": true,
+            "length": "4–6 sentences",
+            "description": "Career summary placed at the top. Explains who you are, what you've done, and what you're looking for."
+          },
+          "work_experience": {
+            "required": true,
+            "format": "reverse_chronological",
+            "bullet_points": true,
+            "quantify_achievements": true,
+            "action_verbs": true
+          },
+          "education": {
+            "required": true,
+            "include_high_school": true,
+            "include_gpa": { "rule": "Include degree classification (1st, 2:1, 2:2, etc.)" }
+          },
+          "skills": {
+            "required": true,
+            "types": ["technical", "soft", "languages"]
+          },
+          "hobbies_interests": {
+            "required": false,
+            "recommended": true,
+            "note": "Still fairly common in UK CVs. Shows personality and cultural fit."
+          },
+          "references": {
+            "required": false,
+            "note": "Write 'References available upon request'. Listing references directly is becoming less common."
+          }
+        },
+        "cover_letter": {
+          "required": false,
+          "recommended": true,
+          "weight": "medium-high"
+        },
+        "tone": {
+          "style": "professional and structured",
+          "voice": "third-person implied",
+          "keywords": "Tailor for each application"
+        },
+        "cultural_notes": [
+          "Always use British English spelling (organisation, analyse, centre).",
+          "Hobbies and interests are still valued for personality insight.",
+          "The personal statement is a key differentiator — invest time in it.",
+          "Degree classification (First, 2:1, etc.) is important to mention."
+        ]
+      },
+
+      "Germany": {
+        "meta": {
+          "document_name": "Lebenslauf",
+          "language": "German (or English for international companies)",
+          "flag": "🇩🇪"
+        },
+        "format": {
+          "length": {
+            "min_pages": 2,
+            "max_pages": 3,
+            "rule": "2–3 pages. Thoroughness is valued. Attach full document set (Bewerbungsmappe)."
+          },
+          "layout": "reverse_chronological",
+          "font_recommended": ["Calibri", "Arial", "Times New Roman"],
+          "font_size_body": "11–12pt",
+          "margins": "2 cm",
+          "file_format": ["PDF"],
+          "ats_optimized": false,
+          "application_package": {
+            "name": "Bewerbungsmappe",
+            "components": ["cover_letter", "cv", "certificates", "diplomas", "reference_letters"]
+          }
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "address": { "required": true },
+          "date_of_birth": { "required": true },
+          "place_of_birth": { "required": true },
+          "nationality": { "required": true },
+          "marital_status": { "required": true },
+          "photo": {
+            "required": true,
+            "style": "professional passport-style headshot",
+            "position": "top right corner",
+            "size": "3.5 x 4.5 cm"
+          }
+        },
+        "sections": {
+          "order": [
+            "personal_information_with_photo",
+            "education",
+            "work_experience",
+            "internships",
+            "language_skills",
+            "computer_skills",
+            "certifications",
+            "volunteer_work",
+            "hobbies_interests",
+            "signature_and_date"
+          ],
+          "education": {
+            "required": true,
+            "listed_before_experience": true,
+            "include_grades": true,
+            "note": "Include GPA/grade for each qualification — German employers scrutinize academic performance."
+          },
+          "work_experience": {
+            "required": true,
+            "format": "reverse_chronological",
+            "bullet_points": true,
+            "quantify_achievements": true
+          },
+          "language_skills": {
+            "required": true,
+            "use_cefr_scale": true,
+            "description": "Use CEFR levels (A1–C2) for each language."
+          },
+          "signature_and_date": {
+            "required": true,
+            "note": "Sign and date the CV at the bottom — this is a formal German business tradition."
+          },
+          "hobbies_interests": {
+            "required": false,
+            "recommended": true
+          },
+          "references": {
+            "required": false,
+            "note": "Arbeitszeugnisse (employer reference letters) are submitted as attachments, not listed in the CV."
+          }
+        },
+        "cover_letter": {
+          "required": true,
+          "name": "Anschreiben",
+          "weight": "very high",
+          "note": "Mandatory. Formal, precise, and structured. Must be tailored to the specific role."
+        },
+        "tone": {
+          "style": "formal, precise, and detailed",
+          "voice": "first-person (in cover letter), factual in CV",
+          "keywords": "Industry-specific terminology expected"
+        },
+        "cultural_notes": [
+          "Germany places high importance on formal qualifications and certificates.",
+          "A professional photo is mandatory and expected.",
+          "Arbeitszeugnisse (work reference certificates from past employers) must be included.",
+          "Thoroughness and detail are virtues — do not omit information.",
+          "Education section typically comes before work experience.",
+          "Sign and date the CV — it signals formal commitment."
+        ]
+      },
+
+      "France": {
+        "meta": {
+          "document_name": "CV (Curriculum Vitae)",
+          "language": "French (or English for international companies)",
+          "flag": "🇫🇷"
+        },
+        "format": {
+          "length": {
+            "min_pages": 1,
+            "max_pages": 2,
+            "rule": "1 page strongly preferred even for experienced professionals. 2 pages only for senior profiles."
+          },
+          "layout": "reverse_chronological",
+          "font_recommended": ["Garamond", "Gill Sans", "Calibri"],
+          "font_size_body": "10–11pt",
+          "margins": "1.5–2 cm",
+          "file_format": ["PDF"],
+          "visual_design": "important",
+          "ats_optimized": false
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "address": { "required": false, "recommended": true },
+          "date_of_birth": { "required": false, "commonly_included": true },
+          "nationality": { "required": false, "commonly_included": true },
+          "marital_status": { "required": false, "commonly_included": false },
+          "photo": {
+            "required": false,
+            "commonly_included": true,
+            "style": "professional headshot",
+            "position": "top right or top left"
+          }
+        },
+        "sections": {
+          "order": [
+            "personal_information_with_photo",
+            "professional_summary",
+            "work_experience",
+            "education",
+            "skills",
+            "languages",
+            "hobbies_interests"
+          ],
+          "professional_summary": {
+            "required": false,
+            "recommended": true,
+            "length": "2–4 lines"
+          },
+          "work_experience": {
+            "required": true,
+            "format": "reverse_chronological",
+            "bullet_points": true,
+            "quantify_achievements": true
+          },
+          "education": {
+            "required": true,
+            "include_grandes_ecoles": true,
+            "note": "Grandes Écoles (HEC, Sciences Po, Polytechnique, etc.) carry immense prestige. Always highlight."
+          },
+          "languages": {
+            "required": true,
+            "use_cefr_scale": true
+          },
+          "hobbies_interests": {
+            "required": false,
+            "recommended": true,
+            "note": "French employers appreciate personal interests as a reflection of personality and cultural depth."
+          },
+          "references": {
+            "required": false,
+            "note": "Not typically listed in the CV."
+          }
+        },
+        "cover_letter": {
+          "required": true,
+          "name": "Lettre de motivation",
+          "weight": "very high",
+          "note": "Eloquence and writing style matter enormously. Must demonstrate motivation and personality."
+        },
+        "tone": {
+          "style": "elegant, concise, and personal",
+          "voice": "first-person (in cover letter)",
+          "keywords": "Aesthetic presentation valued"
+        },
+        "cultural_notes": [
+          "Conciseness is a sign of intelligence — aim for 1 page.",
+          "Visual design and elegance matter; a well-formatted CV stands out.",
+          "Grandes Écoles credentials are very prestigious — highlight them prominently.",
+          "The Lettre de motivation is as important as the CV itself — invest heavily in it.",
+          "Hobbies and interests reflect cultural fit and are genuinely considered.",
+          "French employers may still expect a photo, though it is not legally required."
+        ]
+      },
+
+      "Canada": {
+        "meta": {
+          "document_name": "Résumé",
+          "language": "English (French for Quebec and federal roles)",
+          "flag": "🇨🇦"
+        },
+        "format": {
+          "length": {
+            "min_pages": 1,
+            "max_pages": 2,
+            "rule": "1 page for entry-level, 2 pages for experienced professionals."
+          },
+          "layout": "reverse_chronological",
+          "font_recommended": ["Calibri", "Arial", "Garamond"],
+          "font_size_body": "10–12pt",
+          "margins": "0.5–1 inch",
+          "file_format": ["PDF", "DOCX"],
+          "ats_optimized": true
+        },
+        "personal_information": {
+          "name": { "required": true },
+          "email": { "required": true },
+          "phone": { "required": true },
+          "city_province": { "required": false, "recommended": true },
+          "linkedin": { "required": false, "recommended": true },
+          "photo": { "required": false, "allowed": false, "reason": "Canadian Human Rights Act" },
+          "date_of_birth": { "required": false, "allowed": false },
+          "nationality": { "required": false, "allowed": false },
+          "sin_number": { "required": false, "allowed": false, "reason": "Never include SIN" },
+          "marital_status": { "required": false, "allowed": false }
+        },
+        "sections": {
+          "order": [
+            "professional_summary",
+            "work_experience",
+            "education",
+            "skills",
+            "volunteer_work",
+            "certifications",
+            "awards"
+          ],
+          "professional_summary": {
+            "required": false,
+            "recommended": true,
+            "length": "3–5 lines"
+          },
+          "work_experience": {
+            "required": true,
+            "format": "reverse_chronological",
+            "bullet_points": true,
+            "quantify_achievements": true,
+            "action_verbs": true
+          },
+          "education": {
+            "required": true,
+            "include_high_school": false,
+            "include_gpa": { "rule": "Only if 3.7+ or recent graduate" }
+          },
+          "volunteer_work": {
+            "required": false,
+            "recommended": true,
+            "weight": "high",
+            "note": "Volunteer work is highly valued in Canadian culture and hiring. Always include if applicable."
+          },
+          "bilingualism": {
+            "required": false,
+            "recommended": true,
+            "note": "English-French bilingualism is a significant asset, especially for federal jobs or roles in Quebec."
+          },
+          "references": {
+            "required": false,
+            "note": "Not listed. Provide only when requested."
+          }
+        },
+        "cover_letter": {
+          "required": false,
+          "recommended": true,
+          "weight": "medium"
+        },
+        "tone": {
+          "style": "professional, accomplishment-driven, community-conscious",
+          "voice": "third-person implied (no 'I')",
+          "keywords": "ATS-friendly keywords recommended"
+        },
+        "cultural_notes": [
+          "Very similar to the US résumé but with stronger emphasis on community and volunteer work.",
+          "Bilingualism (English/French) is a major competitive advantage.",
+          "Never include a SIN (Social Insurance Number) on a résumé.",
+          "Canadian employers value diversity, inclusion, and community involvement.",
+          "Federal government jobs often require specific formats — check the employer's guidelines."
+        ]
+      }
+    },
+
+    "agent_rules": {
+      "detection": "Detect target country from user input and load corresponding country profile.",
+      "customization_steps": [
+        "1. Ask user for target country.",
+        "2. Apply country-specific length, layout, and format rules.",
+        "3. Include or exclude personal information fields based on country rules.",
+        "4. Reorder sections according to country's expected section order.",
+        "5. Apply correct photo rule (include/exclude).",
+        "6. Adjust tone and language (British vs American English, formal vs marketing-style).",
+        "7. Flag missing mandatory sections (e.g., Anschreiben for Germany, Lettre de motivation for France).",
+        "8. Provide cultural tips relevant to the target country."
       ],
-      "bullet_style": "achievement-first",
-      "date_style": "MMM YYYY",
-      "max_pages": 2,
-      "include_photo": false
-    }
-  },
-  "Canada": {
-    "language": "English/French",
-    "style": "balanced",
-    "tips": [
-      "Highlight collaboration and communication.",
-      "Show measurable achievements.",
-      "Adapt terminology to local industry usage."
-    ],
-    "focus_keywords": ["teamwork", "communication", "delivery", "stakeholder"],
-    "format": {
-      "section_order": [
-        "Professional Summary",
-        "Core Skills",
-        "Experience",
-        "Education",
-        "Volunteer Experience"
-      ],
-      "bullet_style": "impact-and-collaboration",
-      "date_style": "MMM YYYY",
-      "max_pages": 2,
-      "include_photo": false
-    }
-  },
-  "France": {
-    "language": "French",
-    "style": "structured",
-    "tips": [
-      "Use a clear and formal structure.",
-      "Highlight diplomas and certifications.",
-      "Mention tools and technologies explicitly."
-    ],
-    "focus_keywords": ["formation", "certification", "outils", "missions"],
-    "format": {
-      "section_order": [
-        "Profil",
-        "Competences",
-        "Experiences Professionnelles",
-        "Formation",
-        "Certifications"
-      ],
-      "bullet_style": "mission-resultat",
-      "date_style": "MM/YYYY",
-      "max_pages": 2,
-      "include_photo": true
-    }
-  },
-  "Germany": {
-    "language": "German/English",
-    "style": "precision",
-    "tips": [
-      "Emphasize precision and reliability.",
-      "List technical depth and standards knowledge.",
-      "Use chronological clarity."
-    ],
-    "focus_keywords": ["quality", "standards", "process", "reliability"],
-    "format": {
-      "section_order": [
-        "Profile",
-        "Skills",
-        "Work Experience",
-        "Education",
-        "Certificates"
-      ],
-      "bullet_style": "structured-and-precise",
-      "date_style": "MM.YYYY",
-      "max_pages": 2,
-      "include_photo": true
-    }
-  },
-  "UK": {
-    "language": "English",
-    "style": "achievement",
-    "tips": [
-      "Focus on outcomes and role responsibilities.",
-      "Use concise professional profile.",
-      "Tailor skills section to the role."
-    ],
-    "focus_keywords": ["outcome", "delivery", "initiative", "problem-solving"],
-    "format": {
-      "section_order": [
-        "Professional Profile",
-        "Key Skills",
-        "Work Experience",
-        "Education",
-        "Certifications"
-      ],
-      "bullet_style": "results-focused",
-      "date_style": "MMM YYYY",
-      "max_pages": 2,
-      "include_photo": false
+      "output_format": "Tailored CV in PDF or DOCX based on user preference.",
+      "validation_checks": [
+        "Page count within allowed range",
+        "No prohibited personal info included",
+        "Mandatory sections present",
+        "Photo included/excluded correctly",
+        "Cover letter flagged if mandatory",
+        "Language matches target country standard"
+      ]
     }
   }
 }
+

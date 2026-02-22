@@ -1,0 +1,59 @@
+﻿{
+  "country": "Canada",
+  "language": "English/French",
+  "style": "minimal_corporate",
+  "tips": [
+    "Use clean and neutral formatting.",
+    "Prefer concise objective and experience bullets.",
+    "Highlight bilingual profile when relevant."
+  ],
+  "focus_keywords": ["objective", "experience", "education", "languages"],
+  "format": {
+    "template_name": "canada_monochrome_minimal",
+    "layout_mode": "horizontal_single_column",
+    "page": {
+      "size": "A4",
+      "margins_mm": 14,
+      "background": "#f4f4f4"
+    },
+    "header": {
+      "name_alignment": "center",
+      "name_case": "upper",
+      "title_under_name": true,
+      "contact_inline": true,
+      "top_band": {
+        "enabled": false,
+        "height_mm": 0,
+        "color": "#000000"
+      }
+    },
+    "section_style": {
+      "title_case": "upper",
+      "divider": "triangle_marker",
+      "divider_color": "#2f3a45",
+      "spacing_after_title_mm": 1
+    },
+    "content": {
+      "section_order": [
+        "Objective",
+        "Experience",
+        "Education",
+        "Languages",
+        "Skill Highlights",
+        "Personal Interests",
+        "References"
+      ],
+      "bullet_style": "square",
+      "date_style": "MM/YYYY",
+      "date_alignment": "inline_after_company",
+      "skills_layout": "single_column",
+      "max_pages": 2,
+      "include_photo": false
+    },
+    "ats": {
+      "allow_tables": false,
+      "allow_icons": false,
+      "section_titles_plain_text": true
+    }
+  }
+}

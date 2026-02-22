@@ -1,0 +1,71 @@
+﻿{
+  "country": "France",
+  "language": "French",
+  "style": "formal_two_column",
+  "tips": [
+    "Conserver une structure claire et lisible en deux colonnes.",
+    "Mettre les competences, langues et infos personnelles en colonne gauche.",
+    "Placer experiences et formation en colonne principale."
+  ],
+  "focus_keywords": ["experiences", "formation", "competences", "certifications"],
+  "format": {
+    "template_name": "france_two_column_sidebar",
+    "layout_mode": "two_vertical_columns",
+    "page": {
+      "size": "A4",
+      "margins_mm": 14,
+      "background": "#ffffff"
+    },
+    "header": {
+      "name_alignment": "left",
+      "name_case": "title",
+      "title_under_name": true,
+      "contact_inline": true,
+      "top_band": {
+        "enabled": false,
+        "height_mm": 0,
+        "color": "#1f1f1f"
+      }
+    },
+    "section_style": {
+      "title_case": "upper",
+      "divider": "subtle_line",
+      "divider_color": "#3f3f3f",
+      "spacing_after_title_mm": 2
+    },
+    "content": {
+      "section_order": [
+        "Profil",
+        "Competences",
+        "Langues",
+        "Experiences Professionnelles",
+        "Formation",
+        "Certifications",
+        "Centres d'interet"
+      ],
+      "left_column_sections": [
+        "Profil",
+        "Competences",
+        "Langues",
+        "Certifications",
+        "Centres d'interet"
+      ],
+      "right_column_sections": [
+        "Experiences Professionnelles",
+        "Formation"
+      ],
+      "bullet_style": "dot",
+      "date_style": "MM/YYYY",
+      "date_alignment": "inline_after_company",
+      "skills_layout": "single_column",
+      "max_pages": 2,
+      "include_photo": true,
+      "photo_shape": "rectangle"
+    },
+    "ats": {
+      "allow_tables": false,
+      "allow_icons": true,
+      "section_titles_plain_text": true
+    }
+  }
+}

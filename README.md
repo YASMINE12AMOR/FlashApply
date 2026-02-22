@@ -21,15 +21,18 @@ Application IA simple pour:
 - `src/core/recommender.py`: recommandations prioritaires
 
 ### 3) Configuration
-- `src/config/countries.py`: regles simplifiees par pays (USA, Canada, France, Allemagne, UK)
+- `src/data/countries/*.json`: un fichier JSON par pays (format CV specifique)
+- `src/config/countries.py`: charge automatiquement tous les JSON des pays
 
 ## Flux
-1. L'utilisateur charge son CV + colle/charge une offre
-2. L'app extrait le texte
-3. L'analyse detecte competences et ecarts
-4. Le score est calcule
-5. Le CV adapte et les recommandations sont generes
-6. Le resultat est affiche dans Streamlit
+1. L'utilisateur choisit le pays + renseigne le poste vise + charge/colle son CV
+2. L'offre est optionnelle (mais recommandee)
+3. L'app extrait le texte
+4. L'analyse detecte competences et ecarts
+5. Le score est calcule
+6. Le CV adapte selon le format JSON du pays + recommandations
+7. Les sections sans donnees dans le CV source sont ignorees automatiquement
+8. Le resultat est affiche dans Streamlit
 
 ## Lancement
 ```bash

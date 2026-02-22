@@ -37,24 +37,32 @@ with st.sidebar:
 left, right = st.columns(2)
 
 with left:
-    st.subheader("Job Offer")
+    st.subheader("Target Role")
+    job_title = st.text_input("Job title / Poste vise", placeholder="e.g., Data Analyst")
+    st.subheader("Job Offer (optional but recommended)")
     job_file = st.file_uploader("Upload job offer (.txt or .pdf)", type=["txt", "pdf"], key="job_file")
     job_text_manual = st.text_area("Or paste the job offer", height=260)
 
 with right:
     st.subheader("Your CV")
     cv_file = st.file_uploader("Upload your CV (.txt or .pdf)", type=["txt", "pdf"], key="cv_file")
+    profile_image_file = st.file_uploader(
+        "Photo de profil (optionnel)",
+        type=["png", "jpg", "jpeg"],
+        key="profile_image_file",
+    )
     cv_text_manual = st.text_area("Or paste your CV", height=260)
 
 if run:
     job_text = extract_text(job_file.getvalue() if job_file else None, job_file.name if job_file else None, job_text_manual)
     cv_text = extract_text(cv_file.getvalue() if cv_file else None, cv_file.name if cv_file else None, cv_text_manual)
+    effective_job_text = job_text if job_text else f"Target role: {job_title}"
 
-    if not job_text or not cv_text:
-        st.error("Please provide both a job offer and a CV (file or pasted text).")
+    if not cv_text or not job_title.strip():
+        st.error("Please provide both a target job title (poste) and a CV.")
         st.stop()
 
-    job_analysis = top_keywords(job_text, max_items=25)
+    job_analysis = top_keywords(effective_job_text, max_items=25)
     cv_analysis = top_keywords(cv_text, max_items=25)
 
     keyword_overlap = overlap_ratio(job_analysis.keywords, cv_analysis.keywords)
@@ -71,8 +79,10 @@ if run:
 
     adapted_cv = adapt_cv_text(
         cv_text=cv_text,
+        job_title=job_title,
         country=country,
         style=rules["style"],
+        country_format=rules.get("format", {}),
         missing_terms=missing,
         focus_keywords=rules["focus_keywords"],
     )
@@ -86,10 +96,12 @@ if run:
                     api_key=api_key,
                     base_url=DEFAULT_DEEPSEEK_BASE_URL,
                     model=DEFAULT_DEEPSEEK_MODEL,
+                    job_title=job_title,
                     cv_text=cv_text,
-                    job_text=job_text,
+                    job_text=effective_job_text,
                     country=country,
                     style=rules["style"],
+                    country_format=rules.get("format", {}),
                     missing_terms=missing,
                     focus_keywords=rules["focus_keywords"],
                 )
@@ -109,6 +121,10 @@ if run:
 
     st.subheader("Top missing keywords")
     st.write(missing if missing else ["No major keyword gaps detected in top terms."])
+    st.subheader("Country format loaded (JSON)")
+    st.json(rules.get("format", {}))
+    if not rules.get("format", {}).get("include_photo", False):
+        st.caption("Photo profile ignored for this country format.")
 
     st.subheader("Recommendations")
     for idx, rec in enumerate(recommendations, start=1):
@@ -123,6 +139,13 @@ if run:
         title="FlashApply - Adapted CV",
         country=country,
         model_info=(DEFAULT_DEEPSEEK_MODEL if llm_used else "heuristic-fallback"),
+        layout_mode=rules.get("format", {}).get("layout_mode", "vertical_single_column"),
+        include_photo=rules.get("format", {}).get("include_photo", False),
+        profile_image_bytes=(
+            profile_image_file.getvalue()
+            if profile_image_file and rules.get("format", {}).get("include_photo", False)
+            else None
+        ),
     )
     st.download_button(
         label="Download adapted CV (.pdf)",

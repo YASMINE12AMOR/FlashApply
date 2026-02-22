@@ -1,0 +1,59 @@
+﻿{
+  "country": "USA",
+  "language": "English",
+  "style": "modern_business",
+  "tips": [
+    "Lead with quantified achievements.",
+    "Use strong action verbs in every bullet.",
+    "Keep formatting clean and ATS-friendly."
+  ],
+  "focus_keywords": ["results", "sales", "customer service", "CRM"],
+  "format": {
+    "template_name": "usa_blue_header_professional",
+    "layout_mode": "horizontal_single_column",
+    "page": {
+      "size": "A4",
+      "margins_mm": 14,
+      "background": "#f2f2f2"
+    },
+    "header": {
+      "name_alignment": "center",
+      "name_case": "upper",
+      "title_under_name": false,
+      "contact_inline": true,
+      "top_band": {
+        "enabled": true,
+        "height_mm": 16,
+        "color": "#1f4d7a"
+      },
+      "sub_line": {
+        "enabled": true,
+        "color": "#1f4d7a"
+      }
+    },
+    "section_style": {
+      "title_case": "upper",
+      "divider": "none",
+      "title_weight": "bold"
+    },
+    "content": {
+      "section_order": [
+        "Professional Summary",
+        "Skills",
+        "Work History",
+        "Education"
+      ],
+      "bullet_style": "dot",
+      "date_style": "MM/YYYY",
+      "date_alignment": "right_on_role_line",
+      "skills_layout": "two_columns",
+      "max_pages": 2,
+      "include_photo": false
+    },
+    "ats": {
+      "allow_tables": false,
+      "allow_icons": false,
+      "section_titles_plain_text": true
+    }
+  }
+}
