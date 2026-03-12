@@ -158,39 +158,6 @@ flowchart TD
     CR --> CFG[JSON Country Config]
 ```
 
-### Execution sequence
-
-```mermaid
-sequenceDiagram
-    participant User as Utilisateur
-    participant UI as Streamlit UI
-    participant Pipeline as Pipeline Agent
-    participant CV as CV Extractor
-    participant Offer as Job Offer Extractor
-    participant Rules as Country Rules
-    participant Match as Matching Agent
-    participant Gen as CV Generator Agent
-
-    User->>UI: Upload CV + URL offre + pays
-    UI->>Pipeline: run_pipeline(...)
-    Pipeline->>CV: extract_cv_text(file_path)
-    CV-->>Pipeline: cv_text
-    Pipeline->>Offer: fetch_job_offer(url)
-    Offer-->>Pipeline: offer_text
-    Pipeline->>Rules: get_country_rules(country)
-    Rules-->>Pipeline: country_rules
-    Pipeline->>Match: compute_matching(cv_text, offer_text)
-    Match-->>Pipeline: original_matching
-    Pipeline->>Gen: generate_personalized_cv(...)
-    Gen-->>Pipeline: personalized_cv
-    Pipeline->>Match: compute_matching(personalized_cv, offer_text)
-    Match-->>Pipeline: personalized_matching
-    Pipeline-->>UI: result dict
-    UI-->>User: scores + CV personnalisé + PDF premium
-```
-
----
-
 ## 📁 Project Structure
 
 ```
