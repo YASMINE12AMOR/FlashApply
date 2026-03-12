@@ -64,6 +64,8 @@ It analyses the gap between your CV and a target role, rewrites it using an LLM,
 
 The Streamlit UI is split into two panels:
 
+![FlashApply Interface](flash_apply.png)
+
 ```
 ┌───────────────────────────┬─────────────────────────────────┐
 │         LEFT PANEL        │          RIGHT PANEL            │
