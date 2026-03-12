@@ -1,4 +1,4 @@
-from app.agents.cv_generator_agent import generate_personalized_cv
+from app.agents.cv_generator_agent import generate_personalized_cv, optimize_personalized_cv
 from app.agents.matching_agent import compute_matching
 from app.extractors.cv_extractor import extract_cv_text
 from app.extractors.job_offer_extractor import fetch_job_offer
@@ -50,6 +50,22 @@ def run_pipeline(cv_file_path: str, offer_url: str, country: str) -> dict:
         matching=original_matching,
     )
     personalized_matching = compute_matching(personalized_cv, offer_text)
+
+    # If the generated CV underperforms the source CV lexically, run one targeted pass
+    # to make required offer keywords more explicit without inventing content.
+    if personalized_matching["match_score"] < original_matching["match_score"]:
+        optimized_cv = optimize_personalized_cv(
+            personalized_cv=personalized_cv,
+            offer_text=offer_text,
+            country=country,
+            country_rules=country_rules,
+            matching=personalized_matching,
+        )
+        optimized_matching = compute_matching(optimized_cv, offer_text)
+        if optimized_matching["match_score"] >= personalized_matching["match_score"]:
+            personalized_cv = optimized_cv
+            personalized_matching = optimized_matching
+
     compliance = compute_country_compliance(personalized_cv, country_rules)
 
     return {
